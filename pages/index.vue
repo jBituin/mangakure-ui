@@ -1,59 +1,55 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        mangakure-ui
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+    <div class="mangas-container">
+      <MangaCard
+        v-for="manga in mangas"
+        :manga="manga"
+        @get-chapters="getChapters"
+      ></MangaCard>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Api from "../api";
+import MangaCard from "../components/MangaCard";
 
-export default Vue.extend({})
+export default {
+  components: {
+    MangaCard,
+  },
+  data() {
+    return {
+      mangas: [],
+    };
+  },
+  async mounted() {
+    this.mangas = await Api.getMangas();
+  },
+  methods: {
+    async getChapters(mangaId) {
+     this.$router.push(`/mangas/${mangaId}`)
+    }
+  }
+};
 </script>
 
 <style>
-.container {
+.mangas-container {
   margin: 0 auto;
-  min-height: 100vh;
+  padding-top: 64px;
+  min-height: 92vh;
   display: flex;
+  flex-direction: row;
+  flex-flow: wrap;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 
 .title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: block;
   font-weight: 300;
   font-size: 100px;
