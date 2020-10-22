@@ -4,6 +4,7 @@ interface Options {
   parseResponse?: boolean;
   Authorization?: string;
   method?: string;
+  body?: string
 }
 
 const DefaultOptions: Options = {
@@ -12,6 +13,7 @@ const DefaultOptions: Options = {
     'content-type': 'application/json',
   },
   Authorization: '',
+  body: ''
 };
 
 class HttpClient {
@@ -27,6 +29,7 @@ class HttpClient {
     const res = await fetch(this._baseURL + endpoint, {
       ...options,
       headers: this._headers,
+        
     });
 
     if (!res.ok) throw new Error(res.statusText);
@@ -42,6 +45,13 @@ class HttpClient {
       ...options,
       method: 'GET',
     });
+  }
+
+  post(endpoint: string, body = {}) {
+    return this._fetchJSON(endpoint, {
+      body: JSON.stringify(body),
+      method: 'POST'
+    })
   }
 }
 
