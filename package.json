@@ -10,14 +10,16 @@
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^2.0.0",
-    "ant-design-vue": "^1.6.5",
+    "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "less": "^3.12.2",
     "less-loader": "^7.0.2",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "vue-infinite-scroll": "^2.0.2"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.6",
-    "@nuxt/typescript-build": "^2.0.3"
+    "@nuxt/typescript-build": "^2.0.3",
+    "@nuxtjs/vuetify": "^1.11.2"
   }
 }

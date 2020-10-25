@@ -4,16 +4,17 @@ interface Options {
   parseResponse?: boolean;
   Authorization?: string;
   method?: string;
-  body?: string
+  body?: string;
 }
 
 const DefaultOptions: Options = {
-  baseURL: '',
+  baseURL: "",
   headers: {
-    'content-type': 'application/json',
+    "Content-Type": "application/json",
+    Accept: "application/json"
   },
-  Authorization: '',
-  body: ''
+  Authorization: "",
+  body: ""
 };
 
 class HttpClient {
@@ -21,15 +22,14 @@ class HttpClient {
   _headers: Headers | string[][] | Record<string, string>;
 
   constructor(options: Options = DefaultOptions) {
-    this._baseURL = options.baseURL || '';
+    this._baseURL = options.baseURL || "";
     this._headers = options.headers || {};
   }
 
   async _fetchJSON(endpoint: string, options: Options = DefaultOptions) {
     const res = await fetch(this._baseURL + endpoint, {
       ...options,
-      headers: this._headers,
-        
+      headers: this._headers
     });
 
     if (!res.ok) throw new Error(res.statusText);
@@ -43,15 +43,19 @@ class HttpClient {
   get(endpoint: string, options = {}) {
     return this._fetchJSON(endpoint, {
       ...options,
-      method: 'GET',
+      method: "GET"
     });
   }
 
   post(endpoint: string, body = {}) {
+    console.log("body", body);
+    this._headers = {
+      "Content-Type": "application/json"
+    };
     return this._fetchJSON(endpoint, {
       body: JSON.stringify(body),
-      method: 'POST'
-    })
+      method: "POST"
+    });
   }
 }
 

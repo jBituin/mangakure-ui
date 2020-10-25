@@ -1,17 +1,15 @@
 <template>
-  <div class="container">
-    <div class="mangas-container">
-      <MangaCard
-        v-for="manga in mangas"
-        :manga="manga"
-        @get-chapters="getChapters"
-      ></MangaCard>
-    </div>
-  </div>
+  <v-container fluid>
+    <v-row dense>
+      <v-col v-for="manga in mangas" :key="manga.title" :cols="manga.flex">
+        <MangaCard :manga="manga" @get-chapters="getChapters"></MangaCard>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
-import Api from "../api";
+import Api from "@/api";
 import MangaCard from "../components/MangaCard";
 
 export default {
@@ -28,17 +26,15 @@ export default {
   },
   methods: {
     async getChapters(mangaId) {
-     this.$router.push(`/mangas/${mangaId}`)
-    }
-  }
+      this.$router.push(`/manga/${mangaId}`);
+    },
+  },
 };
 </script>
 
 <style>
 .mangas-container {
   margin: 0 auto;
-  padding-top: 64px;
-  min-height: 92vh;
   display: flex;
   flex-direction: row;
   flex-flow: wrap;

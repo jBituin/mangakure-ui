@@ -6,10 +6,10 @@ export default {
   },
 
   getMangaChapters: async (mangaId: string) => {
-    return await api.get(`/manga-chapters/${mangaId}`);
+    return await api.post(`/manga-chapters`, { mangaId });
   },
 
   getChapterPages: async (chapterId: string) => {
-    return await api.post(`/chapter-images`, { body: { chapterId } });
+    return await api.post(`/chapter-images`, { chapterId });
   }
 };

@@ -1,15 +1,22 @@
 <template>
-  <a-card hoverable>
+  <!-- <div hoverable>
     <img
       slot="cover"
       alt="example"
       :src="manga.cover_image_url"
       @click.stop="emitGetChapters()"
     />
-    <a-card-meta :title="manga.title">
-      <!-- <template slot="description"> www.instagram.com </template> -->
-    </a-card-meta>
-  </a-card>
+    <div :title="manga.title">
+      <template slot="description"> www.instagram.com </template>
+    </div>
+  </div> -->
+  <v-card class="mx-auto" width="150" @click.stop="emitGetChapters">
+    <v-img :src="manga.cover_image_url" height="200px"></v-img>
+
+    <v-card-title> {{ manga.title }} </v-card-title>
+
+    <!-- <v-card-subtitle> 1,000 miles of wonder </v-card-subtitle> -->
+  </v-card>
 </template>
 
 <script>
@@ -17,7 +24,7 @@ export default {
   props: {
     manga: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
   },
   data() {
@@ -26,14 +33,13 @@ export default {
   watch: {
     manga: {
       handler(newValue) {
-        console.log(newValue)
-      }
+        console.log(newValue);
+      },
     },
-    deep: true
+    deep: true,
   },
   methods: {
     emitGetChapters() {
-      console.log("hehe");
       this.$emit("get-chapters", this.manga._id);
     },
   },
@@ -41,7 +47,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.ant-card {
+.v-card {
   width: 150px;
   & img {
     width: 150px;
@@ -49,5 +55,9 @@ export default {
   }
 
   margin: 5px;
+
+  .v-card__title {
+    overflow: hidden;
+  }
 }
 </style>
