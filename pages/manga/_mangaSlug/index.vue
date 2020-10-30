@@ -19,9 +19,7 @@
 
 <script>
 import Api from "@/api";
-// import infiniteScroll from "vue-infinite-scroll";
 export default {
-  // directives: { infiniteScroll },
   data() {
     return {
       manga: {},
@@ -35,9 +33,9 @@ export default {
     };
   },
   async created() {
-    const { mangaId } = this.$route.params;
+    const { mangaSlug } = this.$route.params;
     this.loading = true;
-    const data = await Api.getMangaChapters(mangaId);
+    const data = await Api.getMangaChapters(mangaSlug);
     this.chapters = data.chapters;
     this.manga = data.manga;
     this.loading = false;
@@ -48,19 +46,13 @@ export default {
       const data = this.chapters;
       this.loading = true;
       if (data.length) {
-        // this.$message.warning("Infinite List loaded all");
         this.hasMoreResults = true;
         this.loading = false;
         return;
       }
-      // this.fetchData((res) => {
-      //   this.data = data.concat(res.results);
-      //   this.loading = false;
-      // });
     },
     goToChapter(chapter) {
-      console.log("chapter", chapter);
-      this.$router.push(`/manga/${this.manga._id}/${chapter._id}`);
+      this.$router.push(`/manga/${this.manga.slug}/${chapter.slug}`);
     },
   },
 };

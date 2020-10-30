@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row dense>
-      <v-col v-for="manga in mangas" :key="manga.title" :cols="manga.flex">
+      <v-col v-for="manga in mangas" :key="manga._id" :cols="manga.flex">
         <MangaCard :manga="manga" @get-chapters="getChapters"></MangaCard>
       </v-col>
     </v-row>
@@ -25,8 +25,8 @@ export default {
     this.mangas = await Api.getMangas();
   },
   methods: {
-    async getChapters(mangaId) {
-      this.$router.push(`/manga/${mangaId}`);
+    async getChapters(mangaSlug) {
+      this.$router.push(`/manga/${mangaSlug}`);
     },
   },
 };

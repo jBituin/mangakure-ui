@@ -1,21 +1,8 @@
 <template>
-  <!-- <div hoverable>
-    <img
-      slot="cover"
-      alt="example"
-      :src="manga.cover_image_url"
-      @click.stop="emitGetChapters()"
-    />
-    <div :title="manga.title">
-      <template slot="description"> www.instagram.com </template>
-    </div>
-  </div> -->
   <v-card class="mx-auto" width="150" @click.stop="emitGetChapters">
-    <v-img :src="manga.cover_image_url" height="200px"></v-img>
+    <v-img :src="manga.coverImageUrl" height="200px"></v-img>
 
     <v-card-title> {{ manga.title }} </v-card-title>
-
-    <!-- <v-card-subtitle> 1,000 miles of wonder </v-card-subtitle> -->
   </v-card>
 </template>
 
@@ -40,7 +27,7 @@ export default {
   },
   methods: {
     emitGetChapters() {
-      this.$emit("get-chapters", this.manga._id);
+      this.$emit("get-chapters", this.manga.slug);
     },
   },
 };
