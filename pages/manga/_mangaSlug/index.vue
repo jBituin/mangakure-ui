@@ -113,7 +113,7 @@ export default {
             cursor: pointer;
 
             & :hover {
-              background: orange;
+              background: #fad6a5;
             }
 
             td {

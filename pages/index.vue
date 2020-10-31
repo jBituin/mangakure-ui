@@ -1,10 +1,60 @@
 <template>
   <v-container fluid>
-    <v-row dense>
-      <v-col v-for="manga in mangas" :key="manga._id" :cols="manga.flex">
-        <MangaCard :manga="manga" @get-chapters="getChapters"></MangaCard>
-      </v-col>
-    </v-row>
+    <div class="mangas-container">
+      <v-row dense>
+        <v-col cols="12">
+          <v-form ref="form">
+            <v-text-field
+              v-model="searchQuery"
+              :rules="rules"
+              label="Search manga"
+            ></v-text-field>
+          </v-form>
+        </v-col>
+        <v-col cols="12">
+          <v-simple-table fixed-header height="600px" min-width="500px">
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Name</th>
+                  <th class="text-left">Author</th>
+                  <th class="text-right">Latest Chapter</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in mangas"
+                  :key="item.title"
+                  @dblclick="goToChapterList(item.slug)"
+                >
+                  <td class="text-left">
+                    <span @click="goToChapterList(item.slug)">
+                      {{ item.title }}</span
+                    >
+                  </td>
+                  <td class="text-left">
+                    {{ item.author }}
+                  </td>
+                  <td
+                    class="text-right"
+                    @click="goToChapter(item.slug, item.latestChapters)"
+                  >
+                    <span v-if="item.latestChapters.length">
+                      {{
+                        (item.latestChapters.length &&
+                          item.latestChapters[0].label) ||
+                        "-  "
+                      }}
+                    </span>
+                    <span v-else>-</span>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 
@@ -18,6 +68,8 @@ export default {
   },
   data() {
     return {
+      searchQuery: "",
+      rules: [],
       mangas: [],
     };
   },
@@ -25,14 +77,19 @@ export default {
     this.mangas = await Api.getMangas();
   },
   methods: {
-    async getChapters(mangaSlug) {
+    goToChapterList(mangaSlug) {
       this.$router.push(`/manga/${mangaSlug}`);
+    },
+    goToChapter(mangaSlug, latestChapters) {
+      if (!latestChapters.length) return;
+      const chapterSlug = latestChapters[0].slug;
+      this.$router.push(`/manga/${mangaSlug}/${chapterSlug}`);
     },
   },
 };
 </script>
 
-<style>
+<style lang="less">
 .mangas-container {
   margin: 0 auto;
   display: flex;
@@ -41,6 +98,14 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 50vw;
+}
+
+.row {
+  text-align: center;
+}
+.row form {
+  width: 100%;
 }
 
 .title {
@@ -63,5 +128,40 @@ export default {
 
 .links {
   padding-top: 15px;
+}
+
+.v-data-table {
+  min-width: 500px;
+
+  .v-data-table__wrapper {
+    table {
+      tbody {
+        tr {
+          cursor: pointer;
+
+          & :hover {
+          }
+
+          td {
+            border-bottom: 0 !important;
+            span {
+              color: rgba(0, 0, 0, 0.87);
+            }
+            span:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.theme--light.v-data-table
+  > .v-data-table__wrapper
+  > table
+  > tbody
+  > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
+  background: #fad6a5;
 }
 </style>
