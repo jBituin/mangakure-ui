@@ -7,7 +7,8 @@
 </template>
 
 <script>
-export default {
+import Vue from "vue";
+export default Vue.extend({
   props: {
     manga: {
       type: Object,
@@ -30,7 +31,7 @@ export default {
       this.$emit("get-chapters", this.manga.slug);
     },
   },
-};
+});
 </script>
 
 <style lang="less" scoped>
