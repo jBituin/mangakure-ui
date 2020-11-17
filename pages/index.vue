@@ -3,16 +3,19 @@
     <div class="mangas-container">
       <v-row dense>
         <v-col cols="12">
-          <v-form ref="form">
-            <v-text-field
-              v-model="searchQuery"
-              :rules="rules"
-              label="Search manga"
-            ></v-text-field>
-          </v-form>
+          <v-text-field
+            v-model="searchQuery"
+            :rules="rules"
+            label="Search manga"
+          ></v-text-field>
         </v-col>
         <v-col cols="12">
-          <v-simple-table fixed-header height="600px" min-width="500px">
+          <v-simple-table
+            fixed-header
+            height="600px"
+            min-width="500px"
+            v-if="!searching"
+          >
             <template v-slot:default>
               <thead>
                 <tr>
@@ -52,6 +55,12 @@
               </tbody>
             </template>
           </v-simple-table>
+          <v-progress-circular
+            v-else
+            :size="50"
+            color="amber"
+            indeterminate
+          ></v-progress-circular>
         </v-col>
       </v-row>
     </div>
@@ -59,10 +68,14 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import Api from "@/api";
-import MangaCard from "../components/MangaCard";
+import MangaCard from "@/components/MangaCard.vue";
+import { Manga } from "../interfaces";
 
-export default {
+import debounce from "@/utils/debounce";
+
+export default Vue.extend({
   components: {
     MangaCard,
   },
@@ -71,22 +84,30 @@ export default {
       searchQuery: "",
       rules: [],
       mangas: [],
+      searching: false,
     };
   },
+  watch: {
+    searchQuery: debounce(async (newValue: string, oldValue: string) => {
+      Api.searchManga(newValue);
+    }, 100),
+  },
   async mounted() {
+    this.searching = true;
     this.mangas = await Api.getMangas();
+    this.searching = false;
   },
   methods: {
-    goToChapterList(mangaSlug) {
+    goToChapterList(mangaSlug: string) {
       this.$router.push(`/manga/${mangaSlug}`);
     },
-    goToChapter(mangaSlug, latestChapters) {
+    goToChapter(mangaSlug: string, latestChapters: Array<Manga>) {
       if (!latestChapters.length) return;
       const chapterSlug = latestChapters[0].slug;
       this.$router.push(`/manga/${mangaSlug}/${chapterSlug}`);
     },
   },
-};
+});
 </script>
 
 <style lang="less">
