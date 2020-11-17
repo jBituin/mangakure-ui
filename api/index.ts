@@ -5,6 +5,10 @@ export default {
     return await api.get(`/mangas`);
   },
 
+  searchManga: async (searchQuery: string) => {
+    return await api.post(`/search?query=${searchQuery}`);
+  },
+
   getMangaChapters: async (mangaSlug: string) => {
     return await api.post(`/manga-chapters`, { mangaSlug });
   },
