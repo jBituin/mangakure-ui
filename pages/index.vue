@@ -1,68 +1,66 @@
 <template>
-  <v-container fluid>
-    <div class="mangas-container">
-      <v-row dense>
-        <v-col cols="12">
-          <v-text-field
-            v-model="searchQuery"
-            :rules="rules"
-            label="Search manga"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12">
-          <v-simple-table
-            fixed-header
-            height="600px"
-            min-width="500px"
-            v-if="!searching"
-          >
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">Name</th>
-                  <th class="text-left">Author</th>
-                  <th class="text-right">Latest Chapter</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(item, index) in mangas"
-                  :key="item.title"
-                  @dblclick="goToChapterList(item.slug)"
+  <v-container fluid id="home">
+    <div
+      class="mangas-container d-flex flex-column justify-center align-center align-content-center fill-height"
+    >
+      <div class="description text-center">
+        <!-- <div class="text-h2">MangaKure - Read manga online</div>
+        <div class="subtitle-1">
+          Read thousand of manga online for free in high quality image
+        </div> -->
+      </div>
+
+      <div class="search-container full-width ma-16">
+        <v-text-field
+          :loading="searching"
+          single-line
+          v-model="searchQuery"
+          label="Search manga"
+        ></v-text-field>
+        <span v-if="total"
+          >Results found: <b>{{ total }}</b> mangas</span
+        >
+      </div>
+      <div class="search-result">
+        <v-card
+          class="mx-auto"
+          max-width="800"
+          min-width="400"
+          min-height="400"
+          max-height="400"
+          tile
+          outlined
+          color="transparent"
+          ref="infinite-list"
+        >
+          <v-list two-line>
+            <template v-if="mangas.length">
+              <template v-for="(manga, index) in mangas">
+                <v-list-item
+                  :key="manga.title"
+                  @click="goToChapterList(manga.slug)"
                 >
-                  <td class="text-left">
-                    <span @click="goToChapterList(item.slug)">
-                      {{ item.title }}</span
-                    >
-                  </td>
-                  <td class="text-left">
-                    {{ item.author }}
-                  </td>
-                  <td
-                    class="text-right"
-                    @click="goToChapter(item.slug, item.latestChapters)"
-                  >
-                    <span v-if="item.latestChapters.length">
-                      {{
-                        (item.latestChapters.length &&
-                          item.latestChapters[0].label) ||
-                        "-  "
-                      }}
-                    </span>
-                    <span v-else>-</span>
-                  </td>
-                </tr>
-              </tbody>
+                  <v-list-item-avatar rounded>
+                    <v-img :src="manga.coverImageUrl"></v-img>
+                  </v-list-item-avatar>
+
+                  <v-list-item-content class="text-left">
+                    <v-list-item-title v-html="manga.title"></v-list-item-title>
+                    <v-list-item-subtitle
+                      v-html="manga.author"
+                    ></v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-icon>
+                    <v-icon color="orange"> mdi-book-open </v-icon>
+                  </v-list-item-icon>
+                </v-list-item>
+                <v-divider :key="index" inset></v-divider>
+              </template>
             </template>
-          </v-simple-table>
-          <v-progress-circular
-            v-else
-            :size="50"
-            color="amber"
-            indeterminate
-          ></v-progress-circular>
-        </v-col>
-      </v-row>
+            <template v-else> </template>
+          </v-list>
+        </v-card>
+      </div>
     </div>
   </v-container>
 </template>
@@ -70,32 +68,48 @@
 <script lang="ts">
 import Vue from "vue";
 import Api from "@/api";
-import MangaCard from "@/components/MangaCard.vue";
 import { Manga } from "../interfaces";
 
 import debounce from "@/utils/debounce";
 
 export default Vue.extend({
-  components: {
-    MangaCard,
-  },
   data() {
     return {
       searchQuery: "",
-      rules: [],
       mangas: [],
       searching: false,
+      debounceSearch: null,
+      hasNext: true,
+      page: 1,
+      total: null,
     };
   },
+
+  computed: {},
   watch: {
-    searchQuery: debounce(async (newValue: string, oldValue: string) => {
-      Api.searchManga(newValue);
-    }, 100),
+    searchQuery(newVal, oldVal) {
+      if (newVal.length == 1) return;
+      this.debounceSearch();
+    },
+  },
+
+  created() {
+    this.debounceSearch = debounce(this.searchManga, 200);
   },
   async mounted() {
-    this.searching = true;
-    this.mangas = await Api.getMangas();
-    this.searching = false;
+    if (this.$refs["infinite-list"]) {
+      const listElement = this.$refs["infinite-list"].$el;
+      listElement.addEventListener("scroll", (e) => {
+        if (
+          listElement.scrollTop + listElement.clientHeight >=
+          listElement.scrollHeight
+        ) {
+          this.page++;
+          this.getNext();
+        }
+      });
+    }
+    this.searchManga();
   },
   methods: {
     goToChapterList(mangaSlug: string) {
@@ -106,11 +120,58 @@ export default Vue.extend({
       const chapterSlug = latestChapters[0].slug;
       this.$router.push(`/manga/${mangaSlug}/${chapterSlug}`);
     },
+
+    async getManga() {
+      this.searching = true;
+
+      const { results, pageSize, total } = await Api.getMangas({
+        search: this.searchQuery,
+        page: this.page,
+      });
+
+      if (this.page < pageSize) this.hasNext = true;
+      else this.hasNext = false;
+
+      this.total = total;
+      this.searching = false;
+
+      return {
+        results,
+        pageSize,
+        total,
+      };
+    },
+
+    async getNext() {
+      if (!this.hasNext) return;
+      const { results } = await this.getManga();
+      this.mangas.push(...results);
+    },
+
+    async searchManga() {
+      this.page = 1;
+      const { results, pageSize, total } = await this.getManga();
+      this.mangas = results;
+    },
   },
 });
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+@screen-xs-max: 0px;
+@screen-sm-max: 600px;
+@screen-md-max: 960px;
+@screen-lg-max: 1280px;
+
+@bp-xs: ~"screen and (max-width:" @screen-xs-max~ ")";
+@bp-sm: ~"screen and (max-width:" @screen-sm-max~ ")";
+@bp-md: ~"screen and (max-width:" @screen-md-max~ ")";
+@bp-lg: ~"screen and (max-width:" @screen-lg-max~ ")";
+
+#home {
+  height: 100%;
+}
+
 .mangas-container {
   margin: 0 auto;
   display: flex;
@@ -119,14 +180,26 @@ export default Vue.extend({
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 50vw;
+  width: 60vw;
+  height: 100%;
+
+  @media @bp-lg {
+    width: 100vw;
+  }
 }
 
-.row {
-  text-align: center;
-}
-.row form {
+.search-container {
   width: 100%;
+  padding: 0 50px;
+}
+
+.search-result {
+  width: 100%;
+  padding: 0 50px;
+}
+
+.v-input {
+  flex: none;
 }
 
 .title {
@@ -184,5 +257,19 @@ export default Vue.extend({
   > tbody
   > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
   background: #fad6a5;
+}
+
+.theme--light.v-list-item:hover {
+  background: #fad6a5;
+}
+
+.v-list-item__subtitle,
+.v-list-item__title {
+  // flex: initial;
+  // flex-direction: column;
+}
+
+.v-card {
+  overflow: auto;
 }
 </style>

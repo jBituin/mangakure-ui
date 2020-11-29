@@ -1,6 +1,7 @@
 <template>
-  <div class="section">
-    <div class="container page-reader">
+  <div class="reader">
+    <v-system-bar height="30" fixed></v-system-bar>
+    <div class="images-container">
       <img
         v-for="(page, index) in pages"
         :src="page.url"
@@ -13,7 +14,6 @@
 
 <script>
 import Api from "@/api";
-import axios from "axios";
 
 export default {
   data() {
@@ -45,10 +45,8 @@ export default {
 @bp-md: ~"screen and (max-width:" @screen-md-max~ ")";
 @bp-lg: ~"screen and (max-width:" @screen-lg-max~ ")";
 
-.section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.reader {
+  padding-top: 65px;
 }
 
 .main {
@@ -70,7 +68,14 @@ export default {
   }
 }
 
-.page-reader {
+.v-system-bar {
+  // top: 64px;
+}
+.images-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   margin: 0;
   padding: 0;
   border: 0;

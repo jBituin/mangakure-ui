@@ -9,3 +9,9 @@ export interface Manga {
   readonly slug: string;
   readonly latestChapter: [];
 }
+
+export interface Params {
+  readonly search?: string;
+  readonly page?: number;
+  readonly limit?: number;
+}

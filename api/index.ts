@@ -1,12 +1,12 @@
 import api from "./api";
+import queryBuilder from "../utils/queryParamsBuilder";
+
+import { Params } from "../interfaces";
 
 export default {
-  getMangas: async () => {
-    return await api.get(`/mangas`);
-  },
-
-  searchManga: async (searchQuery: string) => {
-    return await api.post(`/search?query=${searchQuery}`);
+  getMangas: async ({ search, page }: Params) => {
+    const query = queryBuilder({ search, page });
+    return await api.post(`/mangas?${query}`);
   },
 
   getMangaChapters: async (mangaSlug: string) => {
