@@ -20,6 +20,8 @@
   "devDependencies": {
     "@nuxt/types": "^2.14.6",
     "@nuxt/typescript-build": "^2.0.3",
-    "@nuxtjs/vuetify": "^1.11.2"
+    "@nuxtjs/vuetify": "^1.11.2",
+    "@vue/test-utils": "^1.1.1",
+    "vue-jest": "^3.0.7"
   }
 }
