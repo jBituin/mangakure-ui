@@ -15,7 +15,9 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": ["@types/node", "@nuxt/types"]
+    "types": ["@types/node", "@nuxt/types", "@types/jest"]
   },
-  "exclude": ["node_modules", ".nuxt", "dist"]
+  "files": ["ts-shim.d.ts"],
+  "exclude": ["node_modules", ".nuxt", "dist", "tests"],
+  "include": ["utils/*.ts", "api/*.ts"]
 }
