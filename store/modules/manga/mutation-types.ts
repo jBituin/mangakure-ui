@@ -1,0 +1,5 @@
+export enum MutationTypes {
+  SET_MANGA = "SET_MANGA",
+  SET_CHAPTER = "SET_CHAPTER",
+  SET_MANGA_CHAPTERS = "SET_MANGA_CHAPTERS"
+}
