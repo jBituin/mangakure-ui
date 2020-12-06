@@ -95,6 +95,7 @@ export default Vue.extend({
 
   created() {
     this.debounceSearch = debounce(this.searchManga, 200);
+    this.searchManga();
   },
   async mounted() {
     if (this.$refs["infinite-list"]) {
@@ -109,7 +110,6 @@ export default Vue.extend({
         }
       });
     }
-    this.searchManga();
   },
   methods: {
     goToChapterList(mangaSlug: string) {

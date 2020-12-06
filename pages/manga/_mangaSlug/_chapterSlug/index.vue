@@ -2,11 +2,12 @@
   <div class="reader">
     <v-system-bar height="30" fixed></v-system-bar>
     <div class="images-container">
-      <img
+      <v-img
         v-for="(page, index) in pages"
         :src="page.url"
         :key="index"
         :alt="index"
+        contain
       />
     </div>
   </div>
