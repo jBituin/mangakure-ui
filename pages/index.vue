@@ -22,44 +22,16 @@
         >
       </div>
       <div class="search-result">
-        <v-card
-          class="mx-auto"
-          max-width="800"
-          min-width="400"
-          min-height="400"
-          max-height="400"
-          tile
-          outlined
-          color="transparent"
+        <list
+          :data="mangas"
+          :hasImage="true"
+          :hasSubtitle="true"
+          :imageKey="'coverImageUrl'"
+          :subtitleKey="'author'"
+          :titleKey="'title'"
           ref="infinite-list"
-        >
-          <v-list two-line>
-            <template v-if="mangas.length">
-              <template v-for="(manga, index) in mangas">
-                <v-list-item
-                  :key="manga.title"
-                  @click="goToChapterList(manga.slug)"
-                >
-                  <v-list-item-avatar rounded>
-                    <v-img :src="manga.coverImageUrl"></v-img>
-                  </v-list-item-avatar>
-
-                  <v-list-item-content class="text-left">
-                    <v-list-item-title v-html="manga.title"></v-list-item-title>
-                    <v-list-item-subtitle
-                      v-html="manga.author"
-                    ></v-list-item-subtitle>
-                  </v-list-item-content>
-                  <v-list-item-icon>
-                    <v-icon color="orange"> mdi-book-open </v-icon>
-                  </v-list-item-icon>
-                </v-list-item>
-                <v-divider :key="index" inset></v-divider>
-              </template>
-            </template>
-            <template v-else> </template>
-          </v-list>
-        </v-card>
+          @item-click="goToChapterList"
+        ></list>
       </div>
     </div>
   </v-container>
@@ -69,7 +41,7 @@
 import Vue from "vue";
 import Api from "@/api";
 import { Manga } from "../interfaces";
-
+import List from "@/components/List.vue";
 import debounce from "@/utils/debounce";
 
 export default Vue.extend({
@@ -84,7 +56,9 @@ export default Vue.extend({
       total: null,
     };
   },
-
+  components: {
+    List,
+  },
   computed: {},
   watch: {
     searchQuery(newVal, oldVal) {
@@ -112,8 +86,9 @@ export default Vue.extend({
     }
   },
   methods: {
-    goToChapterList(mangaSlug: string) {
-      this.$router.push(`/manga/${mangaSlug}`);
+    goToChapterList(manga: Manga) {
+      const { slug } = manga;
+      this.$router.push(`/manga/${slug}`);
     },
     goToChapter(mangaSlug: string, latestChapters: Array<Manga>) {
       if (!latestChapters.length) return;
