@@ -13,11 +13,12 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "~/api": ["./api/*"],
+      "~/utils": ["./utils/*"]
     },
     "types": ["@types/node", "@nuxt/types", "@types/jest"]
   },
   "files": ["ts-shim.d.ts"],
-  "exclude": ["node_modules", ".nuxt", "dist", "tests"],
-  "include": ["utils/*.ts", "api/*.ts"]
+  "exclude": ["node_modules", ".nuxt", "dist", "tests"]
 }

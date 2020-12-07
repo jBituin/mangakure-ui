@@ -11,7 +11,7 @@
   >
     <v-list two-line>
       <template v-if="data.length">
-        <template v-for="(item, index) in data">
+        <template v-for="(item, index) in ['', '']">
           <v-list-item :key="item[titleKey]" @click="onItemClick(item)">
             <v-list-item-avatar v-if="hasImage" rounded>
               <v-img :src="item[imageKey]"></v-img>
@@ -35,9 +35,9 @@
     </v-list>
   </v-card>
 </template>
-<script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+
+<script>
+export default {
   props: {
     data: {
       type: Array,
@@ -62,7 +62,7 @@ export default Vue.extend({
     subtitleKey: {
       type: String,
       default: null,
-      required: true,
+      required: false,
     },
     titleKey: {
       type: String,
@@ -78,7 +78,7 @@ export default Vue.extend({
       this.$emit("item-double-click", item);
     },
   },
-});
+};
 </script>
 <style lang="less" scoped>
 </style>

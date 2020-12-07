@@ -37,12 +37,12 @@
   </v-container>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from "vue";
-import Api from "@/api";
+import Api from "~/api";
 import { Manga } from "../interfaces";
-import List from "@/components/List.vue";
-import debounce from "@/utils/debounce";
+import List from "~/components/List.vue";
+import debounce from "~/utils/debounce";
 
 export default Vue.extend({
   data() {
@@ -86,14 +86,9 @@ export default Vue.extend({
     }
   },
   methods: {
-    goToChapterList(manga: Manga) {
+    goToChapterList(manga) {
       const { slug } = manga;
       this.$router.push(`/manga/${slug}`);
-    },
-    goToChapter(mangaSlug: string, latestChapters: Array<Manga>) {
-      if (!latestChapters.length) return;
-      const chapterSlug = latestChapters[0].slug;
-      this.$router.push(`/manga/${mangaSlug}/${chapterSlug}`);
     },
 
     async getManga() {

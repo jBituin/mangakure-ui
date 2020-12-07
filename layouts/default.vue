@@ -49,7 +49,9 @@ export default {
         mobile: mobileTitle,
       },
       sidebar: false,
-      menuItems: [{ title: "Home", path: "/", icon: "mdi-home" }],
+      menuItems: [
+        /*{ title: "Home", path: "/", icon: "mdi-home" }*/
+      ],
     };
   },
   methods: {
