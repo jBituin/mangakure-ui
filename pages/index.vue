@@ -30,6 +30,7 @@
           :subtitleKey="'author'"
           :titleKey="'title'"
           ref="infinite-list"
+          :maxHeight="500"
           @item-click="goToChapterList"
         ></list>
       </div>
@@ -231,12 +232,6 @@ export default Vue.extend({
 
 .theme--light.v-list-item:hover {
   background: #fad6a5;
-}
-
-.v-list-item__subtitle,
-.v-list-item__title {
-  // flex: initial;
-  // flex-direction: column;
 }
 
 .v-card {

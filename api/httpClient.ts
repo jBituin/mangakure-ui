@@ -48,7 +48,6 @@ class HttpClient {
   }
 
   post(endpoint: string, body = {}) {
-    console.log("body", body);
     this._headers = {
       "Content-Type": "application/json"
     };

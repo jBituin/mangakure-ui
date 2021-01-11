@@ -1,7 +1,7 @@
 import { ActionContext } from "vuex";
-import { Manga, Chapter } from "@/interfaces/index";
-import { MutationTypes } from "./modules/manga/mutation-types";
-import { ActionTypes } from "./modules/manga/action-types";
+import { Manga, Chapter } from "../interfaces";
+import { MutationTypes } from "./manga/mutation-types";
+import { ActionTypes } from "./manga/action-types";
 
 export interface MangaStateTypes {
   manga: Manga | null;
